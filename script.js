@@ -19,6 +19,15 @@ var disX; //distance x between rooms
 var disY; //distance y between rooms
 var corridorW = 1; //corridor width
 
+const MinRooms = 5;
+var playerX = 0;
+var playerY = 0;
+var playerSpeed = 2;
+var rightPressed = false;
+var leftPressed = false;
+var upPressed = false;
+var downPressed = false;
+
 
  ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
@@ -98,7 +107,11 @@ function Room(x, y, width, height, i)//room object
 		this.h = height*w; //height
 		
 		this.center = [Math.floor(this.x/w+width/2), Math.floor(this.y/w+height/2)]//center
-		
+		if (i == 0) {
+			playerX = this.x+5;
+			playerY = this.y+5;
+		}
+
 		this.draw = function()//draw the number of the room
 			{
 				canvasContext.fillStyle = "white"
@@ -228,12 +241,64 @@ function vCorridor(x1,x2,y1,y2)//vertical corridor creator
 		
  ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
+function createPlayer() {
+	canvasContext.fillStyle = "#FF0000";
+	canvasContext.fillRect(playerX, playerY, 10, 10);
+}
 
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+
+function keyDownHandler(e) {
+    if(e.key == "Right" || e.key == "ArrowRight") {
+        rightPressed = true;
+    }
+    else if(e.key == "Left" || e.key == "ArrowLeft") {
+        leftPressed = true;
+    }
+	else if(e.key == "Up" || e.key == "ArrowUp") {
+        upPressed = true;
+    }
+    else if(e.key == "Down" || e.key == "ArrowDown") {
+        downPressed = true;
+    }
+}
+
+function keyUpHandler(e) {
+    if(e.key == "Right" || e.key == "ArrowRight") {
+        rightPressed = false;
+    }
+    else if(e.key == "Left" || e.key == "ArrowLeft") {
+        leftPressed = false;
+    }
+	else if(e.key == "Up" || e.key == "ArrowUp") {
+        upPressed = false;
+    }
+    else if(e.key == "Down" || e.key == "ArrowDown") {
+        downPressed = false;
+    }
+}
+
+function movement() {
+	if (rightPressed) {
+		playerX += playerSpeed;
+	} else if (leftPressed) {
+		playerX -= playerSpeed;
+	}
+	if (upPressed) {
+		playerY -= playerSpeed;
+	} else if (downPressed) {
+		playerY += playerSpeed;
+	}
+}
  
-function draw() 
-	{
-    makeGrid()//make map
-    createRooms()//make rooms
+function draw() {
+
+	movement();
+	//checkInput();
+	if (rooms.length < MinRooms) {
+		location.reload();
+	}
    	for (var i = 0; i < grid.length; i++) 
    		{
      		grid[i].carve();//carve out the rooms
@@ -244,8 +309,9 @@ function draw()
   		{
   			rooms[i].draw();//draw the rooms number
   		}
+	createPlayer();
   }
 
-//makeGrid()//make map
-//createRooms()//make rooms
-draw()//update
+makeGrid()//make map
+createRooms()//make rooms
+setInterval(draw, 10);//update
