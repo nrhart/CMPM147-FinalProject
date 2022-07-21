@@ -23,7 +23,7 @@ if (randomKey > amount){
 	randomKey -= 2;
 }
 
-var size = 5;	//the actuall size will be a number bettween 5 and 10 | e.g: size+sizeMin
+var size = 5;	//the actual size will be a number bettween 5 and 10 | e.g: size+sizeMin
 var sizeMin = 5;
 
 var disX; //distance x between rooms
@@ -48,6 +48,13 @@ var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
 
+//Tilemap config
+const TILE_WIDTH = w;
+const TILE_HEIGHT = TILE_WIDTH;
+var tiles = new Image();
+tiles.src = 'Tiles.png';
+tiles.crossOrigin = true;
+
 gotKey = false;
 
 
@@ -67,13 +74,31 @@ function Cell(c, r, x, y)//cell object
 			{
 		  	if(this.empty == false)
 		  		{
-		  			canvasContext.fillStyle = "#323232"
-		  			canvasContext.fillRect(this.x, this.y, w, w)
+					canvasContext.drawImage(
+						tiles,
+						0,
+						0,
+						TILE_WIDTH,
+						TILE_HEIGHT,
+						this.x,
+						this.y,
+						TILE_WIDTH,
+						TILE_HEIGHT
+					);
 		  		}
 		  	else 
 		  		{
-		  			canvasContext.fillStyle = "#696966"
-		  			canvasContext.fillRect(this.x, this.y, w, w)
+					canvasContext.drawImage(
+						tiles,
+						0,
+						100,
+						TILE_WIDTH,
+						TILE_HEIGHT,
+						this.x,
+						this.y,
+						TILE_WIDTH,
+						TILE_HEIGHT
+					);
 		  		}
 			}
 
