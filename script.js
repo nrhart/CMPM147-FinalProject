@@ -3,6 +3,8 @@ var canvasContext = canvas.getContext('2d'); //make it 2d
 
 var w = 20; //width of tiles
 
+const MinRooms = 5;
+
 var rows = 50; //how many rows of tiles
 var cols= 50; //how many cols of tiles
 
@@ -11,7 +13,16 @@ var grid = []; //where we store the map
 var rooms = []; //where we store the rooms
 var collide = false; //whether or not the rooms are colliding
 
-var amount = Math.random() * 10; //amount of rooms
+var amount = randomIntFromInterval(MinRooms, 10) //amount of rooms
+var randomKey = randomIntFromInterval(5, amount);
+var randomExit = randomIntFromInterval(0,1);
+if(randomKey == amount){
+	randomKey += 1;
+}
+if (randomKey > amount){
+	randomKey -= 2;
+}
+
 var size = 5;	//the actuall size will be a number bettween 5 and 10 | e.g: size+sizeMin
 var sizeMin = 5;
 
@@ -19,14 +30,25 @@ var disX; //distance x between rooms
 var disY; //distance y between rooms
 var corridorW = 1; //corridor width
 
-const MinRooms = 5;
 var playerX = 0;
 var playerY = 0;
+var playerWidth = 10;
+var playerHeight = 10;
+var keyX = 0;
+var keyY = 0;
+var keyWidth = 10;
+var keyHeight = 10;
+var exitX = 0;
+var exitY = 0;
+var exitWidth = 10;
+var exitHeight = 10;
 var playerSpeed = 2;
 var rightPressed = false;
 var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
+
+gotKey = false;
 
 
  ////////////////////////////////////////////////////////////////
@@ -110,6 +132,15 @@ function Room(x, y, width, height, i)//room object
 		if (i == 0) {
 			playerX = this.x+5;
 			playerY = this.y+5;
+		}
+		if(i == randomKey){
+			keyX = this.x + randomIntFromInterval(10, 80);
+			keyY = this.y + randomIntFromInterval(10, 80);
+		}
+		
+		if(i == randomExit){
+			exitX = this.x + randomIntFromInterval(10, 80);
+			exitY = this.y + randomIntFromInterval(10, 80);
 		}
 
 		this.draw = function()//draw the number of the room
@@ -243,7 +274,17 @@ function vCorridor(x1,x2,y1,y2)//vertical corridor creator
 ////////////////////////////////////////////////////////////////
 function createPlayer() {
 	canvasContext.fillStyle = "#FF0000";
-	canvasContext.fillRect(playerX, playerY, 10, 10);
+	canvasContext.fillRect(playerX, playerY, playerWidth, playerHeight);
+}
+
+function createKey() {
+	canvasContext.fillStyle = "#FFD700";
+	canvasContext.fillRect(keyX, keyY, keyWidth, keyHeight);
+}
+
+function createExit() {
+	canvasContext.fillStyle = "black";
+	canvasContext.fillRect(exitX, exitY, exitWidth, exitHeight);
 }
 
 document.addEventListener("keydown", keyDownHandler, false);
@@ -279,6 +320,10 @@ function keyUpHandler(e) {
     }
 }
 
+function randomIntFromInterval(min, max) { // min and max included 
+	return Math.floor(Math.random() * (max - min + 1) + min)
+  }
+
 function movement() {
 	if (rightPressed) {
 		playerX += playerSpeed;
@@ -296,6 +341,13 @@ function draw() {
 
 	movement();
 	//checkInput();
+	if (playerX + playerWidth > exitX && 
+		playerX < exitX + exitWidth && 
+		playerY + exitHeight > exitY && 
+		playerY < exitY + exitHeight && gotKey == true) {
+		location.reload();
+	}
+
 	if (rooms.length < MinRooms) {
 		location.reload();
 	}
@@ -310,6 +362,20 @@ function draw() {
   			rooms[i].draw();//draw the rooms number
   		}
 	createPlayer();
+	/*if (playerX + playerWidth > rooms.x && 
+		playerX < rooms.x + rooms.w && 
+		playerY + rooms.h > rooms.y && 
+		playerY < rooms.y + rooms.h) {
+		playerSpeed *= 0;
+	}*/
+	createKey(keyX, keyY, keyWidth, keyHeight);
+	if (playerX + playerWidth > keyX && 
+		playerX < keyX + keyWidth && 
+		playerY + playerHeight > keyY && 
+		playerY < keyY + keyHeight) {
+		gotKey = true;
+	}
+	createExit();
   }
 
 makeGrid()//make map
