@@ -1,5 +1,5 @@
 # CMPM147-FinalProject
 ## Dungeon Layout Randomizer
-### Noah Hart & Jeremy Dalberg
+### Noah Hart & Jeremy Dahlberg
 
 
