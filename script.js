@@ -279,7 +279,10 @@ function createPlayer() {
 
 function createKey() {
 	canvasContext.fillStyle = "#FFD700";
-	canvasContext.fillRect(keyX, keyY, keyWidth, keyHeight);
+	canvasContext.fillRect(keyX, keyY, keyWidth-1, keyHeight-1);
+	canvasContext.fillRect(keyX+9, keyY, keyWidth, keyHeight/3);
+	canvasContext.fillRect(keyX+12, keyY, keyWidth/3, keyHeight/2);
+	canvasContext.fillRect(keyX+19, keyY, keyWidth/3, keyHeight/2);
 }
 
 function createExit() {
