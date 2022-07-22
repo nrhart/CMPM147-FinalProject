@@ -38,8 +38,10 @@ var keyX = 0;
 var keyY = 0;
 var keyWidth = 10;
 var keyHeight = 10;
-var exitX = 0;
-var exitY = 0;
+var exitX = -100;
+var exitTempX = 0;
+var exitY = -100;
+var exitTempY = 0;
 var exitWidth = 10;
 var exitHeight = 10;
 var playerSpeed = 2;
@@ -175,8 +177,8 @@ function Room(x, y, width, height, i)//room object
 		}
 		
 		if(i == randomExit){
-			exitX = this.x + randomIntFromInterval(10, 80);
-			exitY = this.y + randomIntFromInterval(10, 80);
+			exitTempX = this.x + randomIntFromInterval(10, 80);
+			exitTempY = this.y + randomIntFromInterval(10, 80);
 		}
 
 		this.draw = function()//draw the number of the room
@@ -400,6 +402,15 @@ function draw() {
 		location.reload();
 	}
 
+	//checkCollision();
+	for (var i = 0; i < grid.length; i++) {
+		if (playerX + playerWidth > grid[i].x && playerX < grid[i].x + exitWidth && playerY + exitHeight > grid[i].y && playerY < grid[i].y + exitHeight && !grid[i].empty) {
+			console.log("touching");
+		}
+	}
+
+
+
 	if (rooms.length < MinRooms) {
 		location.reload();
 	}
@@ -409,10 +420,10 @@ function draw() {
      		grid[i].show();//draw the map
   		}
 		
-  	for (var i = 0; i < rooms.length; i++) 
+  	/*for (var i = 0; i < rooms.length; i++) 
   		{
   			rooms[i].draw();//draw the rooms number
-  		}
+  		}*/
 	createPlayer();
 	createEnemy();
 	if (movingLeft) {
@@ -435,6 +446,8 @@ function draw() {
 	}
 	createExit();
 	if (gotKey) {
+		exitX = exitTempX;
+		exitY = exitTempY;
 		keyX = 10;
 		keyY = 10;
 	}
