@@ -48,6 +48,13 @@ var leftPressed = false;
 var upPressed = false;
 var downPressed = false;
 
+//Enemy Config
+var enemySpeed = 1;
+var enemyX = 0;
+var enemyY = 0;
+var enemyWidth = 10;
+var movingLeft = false;
+
 //Tilemap config
 const TILE_WIDTH = w;
 const TILE_HEIGHT = TILE_WIDTH;
@@ -157,6 +164,10 @@ function Room(x, y, width, height, i)//room object
 		if (i == 0) {
 			playerX = this.x+5;
 			playerY = this.y+5;
+		}
+		if (i == 2) {
+			enemyX = this.x+20;
+			enemyY = this.y+20;
 		}
 		if(i == randomKey){
 			keyX = this.x + randomIntFromInterval(10, 80);
@@ -302,6 +313,11 @@ function createPlayer() {
 	canvasContext.fillRect(playerX, playerY, playerWidth, playerHeight);
 }
 
+function createEnemy() {
+	canvasContext.fillStyle = "#0024FF";
+	canvasContext.fillRect(enemyX, enemyY, enemyWidth, enemyWidth);
+}
+
 function createKey() {
 	canvasContext.fillStyle = "#FFD700";
 	canvasContext.fillRect(keyX, keyY, keyWidth-1, keyHeight-1);
@@ -364,6 +380,14 @@ function movement() {
 		playerY += playerSpeed;
 	}
 }
+
+function ChangeDirection() {
+	if (movingLeft) {
+		movingLeft = false;
+	} else {
+		movingLeft = true;
+	}
+}
  
 function draw() {
 
@@ -390,6 +414,12 @@ function draw() {
   			rooms[i].draw();//draw the rooms number
   		}
 	createPlayer();
+	createEnemy();
+	if (movingLeft) {
+		enemyX -=enemySpeed;
+	} else {
+		enemyX += enemySpeed;
+	}
 	/*if (playerX + playerWidth > rooms.x && 
 		playerX < rooms.x + rooms.w && 
 		playerY + rooms.h > rooms.y && 
@@ -404,8 +434,13 @@ function draw() {
 		gotKey = true;
 	}
 	createExit();
+	if (gotKey) {
+		keyX = 10;
+		keyY = 10;
+	}
   }
 
 makeGrid()//make map
 createRooms()//make rooms
+setInterval(ChangeDirection, 800);
 setInterval(draw, 10);//update
